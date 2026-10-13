@@ -1,4 +1,3 @@
-"""Hough-transform line finder (2-D) used by pipeline.py. Only numpy is required."""
 import numpy as np
 
 
@@ -27,8 +26,7 @@ def hough_transform_2d(u, v, n_theta=180, n_rho=200, rho_range=None):
 
 def find_peaks_2d(accumulator, thetas, rho_vals, n_peaks=12, min_votes=4,
                    suppress_bins=(6, 6)):
-    """Greedy peak-picking with non-max suppression: take the current max,
-    record it, zero out a window around it so nearby bins from the same
+    """take the current max, record it, zero out a window around it so nearby bins from the same
     physical line don't get picked again, repeat."""
     work = accumulator.copy()
     peaks = []
@@ -51,9 +49,7 @@ def line_inlier_mask(u, v, theta, rho, tol):
 
 
 def refit_line_tls(u, v):
-    """Total-least-squares refit of a line through points already assigned to
-    a Hough peak, via eigendecomposition of the 2x2 scatter matrix. Cleans up
-    the coarse Hough-bin estimate into a precise (theta, rho)."""
+    """Cleans up the coarse Hough-bin estimate into a precise (theta, rho)."""
     pts = np.stack([u, v], axis=1)
     centroid = pts.mean(axis=0)
     centered = pts - centroid

@@ -1,15 +1,12 @@
 """
-ag_evaluate.py -- Step 5d: the test harness. Nothing here is part of the algorithm; it only
-MEASURES the algorithm, so every claim you make has a number and an error bar behind it.
-
+ag_evaluate.py -- the test. Nothing here is part of the algorithm; it only
+MEASURES the algorithm.
 Usage
 -----
   python ag_evaluate.py --synthetic                         # full report on the testbed
   python ag_evaluate.py --h5 test.h5 --cal-h5 val.h5        # real simulation data (Zenodo)
   python ag_evaluate.py --h5 test.h5 --cal-h5 val.h5 --show # + event displays
 
-Golden rule baked into the CLI: parameters are CALIBRATED on one file/split (validation) and
-EVALUATED on a different one (test). Never tune on the events you report.
 """
 import argparse
 import numpy as np

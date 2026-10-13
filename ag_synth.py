@@ -1,20 +1,6 @@
 """
-ag_synth.py -- Step 5a: a MORE REALISTIC synthetic generator (replaces Step 1's toy one).
+ag_synth.py -- a MORE REALISTIC synthetic generator (replaces Step 1's toy one).
 
-What changed vs Step 1, and why (all of it from the ALPHA-g papers):
-  * UNITS ARE mm (the open Zenodo dataset is in mm; Step 1-4 used cm).
-  * Annihilation vertices sit on the Penning-trap wall NEAR THE AXIS (r_vertex), inside the
-    TPC's inner cathode. Pions fly OUTWARD through the gas. (Step 1 put the vertex on the
-    outer wall pointing inward -- that is not the real geometry.)
-  * Charged pions are HELICES in the 1 T axial field, not straight lines.
-  * The TPC only records the annulus r_in < r < r_out; the hollow centre records nothing.
-  * Random noise hits are added.
-  * Cosmic muons come from above (zenith-angle pdf ~ cos^2), are straight, and are only
-    "seen" where they cross the annulus.
-
-!!! The numbers in Det are PLACEHOLDERS. Replace them with values measured from the real
-    data (ag_data.estimate_geometry). The point of this file is to give a testbed whose
-    *structure* matches reality, so the pipeline's logic can be debugged before real data.
 """
 import numpy as np
 from dataclasses import dataclass
@@ -118,8 +104,6 @@ def make_cosmic_event(rng, det=Det(), n_cosmics=1):
 
 
 def overlay_cosmics(rng, event, det=Det(), n_cosmics=1):
-    """Same idea as make_mixed_event but starting from ANY existing event (e.g. a real
-    simulated annihilation loaded from the Zenodo file). This is the 'embedding' trick."""
     ev = dict(event)
     ev['pts'] = np.vstack([event['pts']] + [make_cosmic_hits(rng, det) for _ in range(n_cosmics)])
     ev['kind'] = 'mixed'

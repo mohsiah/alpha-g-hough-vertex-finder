@@ -1,5 +1,5 @@
 """
-Step 2: Animate a simulated annihilation event so the particle tracks visibly
+Animate a simulated annihilation event so the particle tracks visibly
 grow outward from the wall over time, with a "flash" marking the annihilation
 moment -- instead of one static all-at-once scatter plot.
 """

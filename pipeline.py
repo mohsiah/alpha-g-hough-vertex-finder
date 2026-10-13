@@ -1,6 +1,5 @@
 """
 pipeline.py -- the SIMPLE, EXPLAINABLE version of the final algorithm.
-Only numpy + the Hough functions in hough_detector.py. Plain functions, plain dicts, no classes.
 
 THE WHOLE IDEA IN FOUR SENTENCES:
   1. Every annihilation track starts at ONE point on the trap wall, very close to the central axis.
@@ -15,7 +14,7 @@ import numpy as np
 from hough_detector import find_lines_2d, refit_line_tls
 
 CFG = dict(
-    R_VERTEX=25.0,     # mm  radius of the trap wall where annihilations happen (read from data!)
+    R_VERTEX=25.0,     # mm  radius of the trap wall where annihilations happen
     D0_MAX=60.0,       # mm  a track "points at the axis" if its line passes closer than this
     PHI_WINDOW=0.15,   # rad half-width of an angular slice (tracks leave the axis -> same angle)
     PHI_BIN=0.03,      # rad bin of the angle histogram

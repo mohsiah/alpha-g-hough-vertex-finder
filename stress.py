@@ -1,4 +1,3 @@
-"""Stress test: cosmics my algorithm was NOT designed around. Same pipeline, same D0_MAX=70."""
 import numpy as np
 import pipeline as sp
 import ag_synth as syn

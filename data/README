@@ -1,5 +1,32 @@
 # Data (not stored in this repo)
-- ALPHA-g simulation: https://zenodo.org/records/13963779  (validation + test .h5 files)
-- MicroBooNE overlay sample: https://zenodo.org/records/7261921
-Fill in: exact filenames used, and SHA-256 of each (`sha256sum file.h5`).
-Reproduce: `python run.py run val.h5 test.h5 --n 3000`, `python ablate.py val.h5 test.h5 --n 3000`
+
+The data files are too large for GitHub. Download them from Zenodo and place them
+in the same folder as the scripts.
+
+## ALPHA-g simulation (Zenodo record 13963779)
+Link: https://zenodo.org/records/13963779
+
+| Role | Filename | SHA-256 |
+|---|---|---|
+| Validation (chooses D0_MAX) | spacepoint_vertices_simulation_0-310_val_light-wireamp0-runnum0-sim1.h5 | 3FE371CDB7F8B3997FE7AB1B0C698E3E5D0FF5D918B89F762714E4119734857B |
+| Test (final results) | [exact filename].h5 | [64-character hash] |
+
+## MicroBooNE overlay sample (Zenodo record 7261921)
+Link: https://zenodo.org/records/7261921
+
+| Role | Filename | SHA-256 |
+|---|---|---|
+| Development | nue_NoWire_19.h5 | C1BC4A45ECBA3F16CC4FD8EB40C57B1A53BC803F238570DDBD1D539F2A069F32C191CB0C09E94BE0810C25F498DEEC56898FBD97417FFA48D2116A413C770B4B |
+| Test | [exact filename] | [64-character hash] |
+
+To verify your download:
+- Windows: `Get-FileHash [filename] -Algorithm SHA256`
+- Mac/Linux: `sha256sum [filename]`
+
+The output must match the table above.
+
+## Reproducing the results
+    python run.py run [validation file] [test file] --n 3000
+    python ablate.py [validation file] [test file] --n 3000
+    python stress.py
+    python ub_run.py [development file] [test file] --n 100

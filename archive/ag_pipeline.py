@@ -1,16 +1,16 @@
 """
 ag_pipeline.py -- Step 5b: the FINAL algorithm.
 
-Input : one event = (n, 3) array of spacepoints (x, y, z) in mm.  NO labels, ever.
+Input : one event = (n, 3) array of spacepoints (x, y, z) in mm.  NO labels
 Output: Result(tracks, vertex, label, reason)
 
-Pipeline (each stage maps onto something you already built):
+Pipeline:
 
   1. FIND TRACKS      Your Step-4 2D Hough (find_lines_2d) is reused UNCHANGED, but applied
                       in the detector's natural views:  hits are first grouped by azimuth
                       phi (a 1-D vote), then a Hough line is searched in the (r, z) plane of
                       each phi-sector.  A candidate must ALSO be a straight line in (r, r*dphi)
-                      -> the same "two views must agree" idea as your (x-z, y-z) agreement,
+                      -> the same "two views must agree" idea as (x-z, y-z) agreement,
                       but with views that are never degenerate for tracks leaving the axis.
   2. FIT TRACKS       Total-least-squares line in (r,z) [reuses refit_line_tls] and in (x,y).
                       From these: z-extrapolation to the trap wall, and d0 = distance of the
@@ -18,7 +18,6 @@ Pipeline (each stage maps onto something you already built):
   3. FIND VERTEX      Tracks that point at the axis (d0 small) and agree on the same z at the
                       trap radius form a vertex. >= 2 tracks are required.
   4. CLASSIFY         vertex found -> 'annihilation';  otherwise -> 'background'.
-                      (Your Step-4 classify_track idea survives as a per-track TAG.)
 
 Why a *vertex* is the discriminator and not "is the track long and vertical":
   a near-vertical pion that crosses the whole TPC looks like a cosmic by shape alone, while a
@@ -28,7 +27,6 @@ Why a *vertex* is the discriminator and not "is the track long and vertical":
 from dataclasses import dataclass, field, replace
 import numpy as np
 
-# >>> If your Step-4 file has a different name, change THIS ONE LINE. <<<
 from hough_detector import find_lines_2d, refit_line_tls
 
 TWO_PI = 2 * np.pi
@@ -46,7 +44,7 @@ class Params:
     min_hits: int = 6             # minimum spacepoints for a track
     rz_tol: float = 6.0           # mm, inlier distance in the (r,z) view
     rphi_tol: float = 5.0         # mm, inlier distance in the (r, r*dphi) view
-    hough_rho_bin: float = 3.0    # mm, accumulator bin ~ half the inlier tolerance (see note)
+    hough_rho_bin: float = 3.0    # mm, accumulator bin ~ half the inlier tolerance 
     hough_peaks: int = 4
     hough_suppress: tuple = (3, 3)
     # ---- vertexing ----
@@ -62,7 +60,7 @@ class Params:
     sigma_xy: float = 10.0        # mm, xy error of the extrapolated wall point (CALIBRATE)
     pull_max: float = 3.0         # tracks must meet at one 3-D point within this many sigma
     min_vertex_tracks: int = 2
-    # ---- per-track tag (your Step-4 rule, now in mm) ----
+    
     cosmic_angle_max: float = 0.35
     cosmic_length_min: float = 200.0
 
@@ -99,7 +97,7 @@ class Track:
     angle_from_z: float = np.nan
     length: float = 0.0
     extrapolable: bool = False
-    cosmic_like: bool = False      # your Step-4 rule, kept as a tag
+    cosmic_like: bool = False      
     through_going: bool = False    # set by the collinearity veto
 
     def wall_candidates(self, P):
@@ -177,10 +175,7 @@ def _phi_consistent(hits, r, phi, c, P):
 
 
 def _best_track_in_sector(r, phi, z, sel, c, P):
-    u, v = r[sel] - r[sel].mean(), z[sel] - z[sel].mean()     # centre the cloud
-    # Choose the accumulator size so a bin is ~hough_rho_bin mm wide in rho AND the angular
-    # bin moves the line's far end by about the same amount. (Fixed n_rho/n_theta would make
-    # bins far finer than the hit noise for small clouds -> votes smear -> no peak.)
+    u, v = r[sel] - r[sel].mean(), z[sel] - z[sel].mean()   
     max_r = np.sqrt(np.max(u**2 + v**2)) * 1.05 + 1e-6
     n_rho = int(np.clip(np.ceil(2 * max_r / P.hough_rho_bin), 40, 2000))
     n_theta = int(np.clip(np.ceil(np.pi * max_r / P.hough_rho_bin), 90, 720))
